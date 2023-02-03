@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ArrowLeftComponent }                                                           from '@projects/ngx-tiny-carousel/src/lib/component/arrow-left/arrow-left.component';
-import { ArrowRightComponent }                                                          from '@projects/ngx-tiny-carousel/src/lib/component/arrow-right/arrow-right.component';
-import { DotsComponent }                                                                from '@projects/ngx-tiny-carousel/src/lib/component/dots/dots.component';
+import { ArrowLeftComponent }                                                           from './component/arrow-left/arrow-left.component';
+import { ArrowRightComponent }                                                          from './component/arrow-right/arrow-right.component';
+import { DotsComponent }                                                                from './component/dots/dots.component';
 
 @Component({
   selector:    'ngx-tiny-carousel',

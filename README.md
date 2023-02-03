@@ -6,12 +6,35 @@ This library is lightweight carousel plugin for Angular.
 
 | ngx-tiny-carousel | Angular   |
 |-------------------|-----------|
-| 0.2.0             | \>=14.2.0 |
+| 0.2.3             | \>=14.2.0 |
 
 # Installation
 
+Add package.
+
 ```shell
 npm i ngx-tiny-carousel --save
+```
+
+Add Module.
+
+```typescript
+@NgModule({
+  
+  ...
+    
+  imports:   [
+    ...
+      
+    NgxTinyCarouselModule,
+  
+    ...
+  ],
+  bootstrap: [...]
+})
+export class AppModule
+{
+}
 ```
 
 # Usage
