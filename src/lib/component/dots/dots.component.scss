@@ -1,0 +1,25 @@
+.dots {
+  transform-origin: bottom;
+  text-align: center;
+  width: 100%;
+
+  position: absolute;
+  bottom: 1%;
+  left: 0;
+
+  .dot {
+    display: inline-block;
+    border-radius: 20px;
+    width: 10px;
+    height: 10px;
+    background: white;
+    margin: 5px;
+    cursor: pointer;
+    opacity: .4;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, .5);
+
+    &.active {
+      opacity: 1;
+    }
+  }
+}

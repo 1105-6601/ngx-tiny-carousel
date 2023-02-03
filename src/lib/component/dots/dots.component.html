@@ -1,0 +1,3 @@
+<div class="dots" *ngIf="dotCount > 1" #dots>
+  <div class="dot" [ngClass]="{'active': i === currentIndex}" *ngFor="let _ of [].constructor(dotCount); let i = index" (click)="dotSelect.emit(i)"></div>
+</div>

@@ -1,0 +1,14 @@
+<div class="carousel-container" #container [style.height.px]="height">
+  <div class="cells" #cells>
+    <ng-content></ng-content>
+  </div>
+  <div class="arrows" *ngIf="!!uiScale" (click)="carouselClick.emit(currentCellIndex)">
+    <div class="arrow arrow-left" (click)="prev($event)" *ngIf="dotCount > 1">
+      <arrow-left #arrowLeft [uiScale]="uiScale"></arrow-left>
+    </div>
+    <div class="arrow arrow-right" (click)="next($event)" *ngIf="dotCount > 1">
+      <arrow-right #arrowRight [uiScale]="uiScale"></arrow-right>
+    </div>
+  </div>
+  <dots *ngIf="!!uiScale" [dotCount]="dotCount" [currentIndex]="currentCellIndex" [uiScale]="uiScale" (dotSelect)="jump($event)" #dots></dots>
+</div>
