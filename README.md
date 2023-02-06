@@ -6,7 +6,7 @@ This library is lightweight carousel plugin for Angular.
 
 | ngx-tiny-carousel | Angular   |
 |-------------------|-----------|
-| 0.3.0             | \>=14.2.0 |
+| 0.4.0             | \>=14.2.0 |
 
 # Installation
 
@@ -39,58 +39,54 @@ export class AppModule
 
 # Usage
 
-Please give each `div` element a `cell` class.
-
 ```html
-
 <div style="width: 400px;">
-  <ngx-tiny-carousel [displayCells]="1" (carouselClick)="onClick($event)">
-    <div class="cell">
+  <ngx-tiny-carousel [displayCells]="1">
+    <ngx-tiny-carousel-cell>
       ...
-    </div>
-    <div class="cell">
+    </ngx-tiny-carousel-cell>
+    <ngx-tiny-carousel-cell>
       ...
-    </div>
-    <div class="cell">
+    </ngx-tiny-carousel-cell>
+    <ngx-tiny-carousel-cell>
       ...
-    </div>
+    </ngx-tiny-carousel-cell>
   </ngx-tiny-carousel>
 </div>
 ```
 
 # Image carousel example
 
+## ts
+
+```typescript
+@Component({
+  selector:    'app',
+  templateUrl: './app.component.html',
+})
+export class CarouselComponent
+{
+  public imageSources = [
+    'https://picsum.photos/400/400',
+    'https://picsum.photos/300/400',
+    'https://picsum.photos/250/400',
+    'https://picsum.photos/400/250',
+    'https://picsum.photos/400/300',
+  ];
+}
+```
+
 ## html
 
 ```html
 
 <div style="width: 400px;">
-  <ngx-tiny-carousel [displayCells]="1" (carouselClick)="onClick($event)">
-    <div class="cell">
+  <ngx-tiny-carousel [displayCells]="1">
+    <ngx-tiny-carousel-cell *ngFor="let src of imageSources">
       <div class="centralise">
-        <img src="https://picsum.photos/300/400" alt="">
+        <img [src]="src" alt="">
       </div>
-    </div>
-    <div class="cell">
-      <div class="centralise">
-        <img src="https://picsum.photos/250/400" alt="">
-      </div>
-    </div>
-    <div class="cell">
-      <div class="centralise">
-        <img src="https://picsum.photos/400/250" alt="">
-      </div>
-    </div>
-    <div class="cell">
-      <div class="centralise">
-        <img src="https://picsum.photos/400/300" alt="">
-      </div>
-    </div>
-    <div class="cell">
-      <div class="centralise">
-        <img src="https://picsum.photos/400/400" alt="">
-      </div>
-    </div>
+    </ngx-tiny-carousel-cell>
   </ngx-tiny-carousel>
 </div>
 ```
@@ -98,18 +94,16 @@ Please give each `div` element a `cell` class.
 ## scss
 
 ```scss
-.cell {
-  .centralise {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.centralise {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 ```

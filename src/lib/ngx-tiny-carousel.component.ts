@@ -1,14 +1,16 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChild } from '@angular/core';
-import { ArrowLeftComponent }                                                                      from './component/arrow-left/arrow-left.component';
-import { ArrowRightComponent }                                                          from './component/arrow-right/arrow-right.component';
-import { DotsComponent }                                                                from './component/dots/dots.component';
+import { AfterContentInit, AfterViewInit, Component, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewChild } from '@angular/core';
+import { ArrowLeftComponent }                                                                                              from './component/arrow-left/arrow-left.component';
+import { ArrowRightComponent }                                                                                             from './component/arrow-right/arrow-right.component';
+import { DotsComponent }                                                                                                   from './component/dots/dots.component';
+import { NgxTinyCarouselCellComponent }                                                                                    from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
+import { Subscription }                                                                                                    from 'rxjs';
 
 @Component({
   selector:    'ngx-tiny-carousel',
   templateUrl: './ngx-tiny-carousel.component.html',
   styleUrls:   ['./ngx-tiny-carousel.component.scss'],
 })
-export class NgxTinyCarouselComponent implements AfterViewInit
+export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit, OnDestroy
 {
   private static readonly ARROW_SCALE_BASE_DISTANCE = 400;
 
@@ -39,6 +41,9 @@ export class NgxTinyCarouselComponent implements AfterViewInit
   @ViewChild('dots')
   public dots?: DotsComponent;
 
+  @ContentChildren(NgxTinyCarouselCellComponent)
+  public cellList?: QueryList<NgxTinyCarouselCellComponent>;
+
   public totalCells: number = 0;
 
   public currentCellIndex: number = 0;
@@ -47,13 +52,28 @@ export class NgxTinyCarouselComponent implements AfterViewInit
 
   private translateXDistance: number = 0;
 
-  private cellSelector: string = '.cell';
-
   private arrowSelector: string = '.arrow';
+
+  private contentSubscription?: Subscription;
 
   public ngAfterViewInit(): void
   {
     setTimeout(this.initialize.bind(this));
+  }
+
+  public ngAfterContentInit(): void
+  {
+    const observable = this.cellList?.changes;
+    if (observable) {
+      this.contentSubscription = observable.subscribe((list: QueryList<HTMLElement>) => {
+        setTimeout(this.initialize.bind(this));
+      });
+    }
+  }
+
+  public ngOnDestroy(): void
+  {
+    this.contentSubscription?.unsubscribe();
   }
 
   public prev(event: MouseEvent): void
@@ -110,7 +130,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit
 
   private initialize(): void
   {
-    if (!this.cells) {
+    if (!this.cells || !this.cellList) {
       return;
     }
 
@@ -122,17 +142,16 @@ export class NgxTinyCarouselComponent implements AfterViewInit
       this.height = this.cellWidth;
     }
 
-    const cells    = this.cells.nativeElement as HTMLElement;
-    const cellList = cells.querySelectorAll<HTMLElement>(this.cellSelector);
-
     this.translateXDistance = this.cellWidth;
-    this.totalCells         = cellList.length;
+    this.totalCells         = this.cellList.length;
+
+    const cells = this.cells.nativeElement as HTMLElement;
 
     cells.style.width = `${this.cellWidth * this.totalCells}px`;
 
-    Array.from(cellList).forEach((cell: HTMLElement, index: number) => {
-      cell.style.width = `${this.cellWidth}px`;
-      cell.style.left  = `${this.cellWidth * index}px`;
+    Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
+      cell.ElementRef.nativeElement.style.width = `${this.cellWidth}px`;
+      cell.ElementRef.nativeElement.style.left  = `${this.cellWidth * index}px`;
     });
 
     const arrows = this.arrows?.nativeElement.querySelectorAll(this.arrowSelector) as QueryList<HTMLElement>;

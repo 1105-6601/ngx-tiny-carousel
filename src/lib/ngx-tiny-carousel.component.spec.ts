@@ -1,9 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, ViewChild }      from '@angular/core';
-import { ArrowLeftComponent }        from './component/arrow-left/arrow-left.component';
-import { ArrowRightComponent }       from './component/arrow-right/arrow-right.component';
-import { DotsComponent }             from './component/dots/dots.component';
-import { NgxTinyCarouselComponent }  from './ngx-tiny-carousel.component';
+import { ComponentFixture, TestBed }    from '@angular/core/testing';
+import { Component, ViewChild }         from '@angular/core';
+import { ArrowLeftComponent }           from './component/arrow-left/arrow-left.component';
+import { ArrowRightComponent }          from './component/arrow-right/arrow-right.component';
+import { DotsComponent }                from './component/dots/dots.component';
+import { NgxTinyCarouselCellComponent } from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
+import { NgxTinyCarouselComponent }     from './ngx-tiny-carousel.component';
 
 jest.useFakeTimers();
 
@@ -11,21 +12,21 @@ jest.useFakeTimers();
   template: `
               <div>
                 <ngx-tiny-carousel #tinyCarouselComponent>
-                  <div class="cell">
+                  <ngx-tiny-carousel-cell>
                     <img src="https://picsum.photos/300/400" alt="">
-                  </div>
-                  <div class="cell">
-                    <img src="https://picsum.photos/250/400" alt="">
-                  </div>
-                  <div class="cell">
-                    <img src="https://picsum.photos/400/250" alt="">
-                  </div>
-                  <div class="cell">
-                    <img src="https://picsum.photos/400/300" alt="">
-                  </div>
-                  <div class="cell">
-                    <img src="https://picsum.photos/400/400" alt="">
-                  </div>
+                  </ngx-tiny-carousel-cell>
+                  <ngx-tiny-carousel-cell>
+                    <img src="https://picsum.photos/300/400" alt="">
+                  </ngx-tiny-carousel-cell>
+                  <ngx-tiny-carousel-cell>
+                    <img src="https://picsum.photos/300/400" alt="">
+                  </ngx-tiny-carousel-cell>
+                  <ngx-tiny-carousel-cell>
+                    <img src="https://picsum.photos/300/400" alt="">
+                  </ngx-tiny-carousel-cell>
+                  <ngx-tiny-carousel-cell>
+                    <img src="https://picsum.photos/300/400" alt="">
+                  </ngx-tiny-carousel-cell>
                 </ngx-tiny-carousel>
               </div>
             `,
@@ -45,13 +46,13 @@ describe('NgxTinyCarouselComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [
         NgxTinyCarouselComponent,
+        NgxTinyCarouselCellComponent,
         ArrowLeftComponent,
         ArrowRightComponent,
         DotsComponent,
         HostComponent,
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
 
     hostFixture   = TestBed.createComponent(HostComponent);
     hostComponent = hostFixture.componentInstance;
@@ -103,19 +104,19 @@ describe('NgxTinyCarouselComponent', () => {
       });
     });
 
-    it('特定クラスを持つ要素をカルーセルの要素として検出される', () => {
+    it('子コンポーネントをカルーセルの要素として検出する', () => {
       expect(hostComponent.tinyCarouselComponent?.totalCells).toBe(5);
     });
 
-    it('要素コンテナの幅が要素数x要素幅に設定される', () => {
+    it('子コンポーネントの親要素の幅が要素数x要素幅に設定される', () => {
       const cellWidth  = hostComponent.tinyCarouselComponent!.cellWidth;
       const totalCells = hostComponent.tinyCarouselComponent!.totalCells;
       expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.width).toBe(`${cellWidth * totalCells}px`);
     });
 
     it('各要素にwidthが設定される', () => {
-      const cell = hostComponent.tinyCarouselComponent?.cells?.nativeElement.querySelector('.cell');
-      expect(cell.style.width).toBe(`${hostComponent.tinyCarouselComponent!.cellWidth}px`);
+      const cell = hostComponent.tinyCarouselComponent?.cellList?.get(0);
+      expect(cell?.ElementRef.nativeElement.style.width).toBe(`${hostComponent.tinyCarouselComponent!.cellWidth}px`);
     });
   });
 
@@ -150,7 +151,7 @@ describe('NgxTinyCarouselComponent', () => {
 
       describe('末尾の要素の場合', () => {
         it('currentCellIndexが0に戻る', () => {
-          hostComponent.tinyCarouselComponent!.currentCellIndex = hostComponent.tinyCarouselComponent!.totalCells - 1
+          hostComponent.tinyCarouselComponent!.currentCellIndex = hostComponent.tinyCarouselComponent!.totalCells - 1;
           hostFixture.nativeElement.querySelector('.arrow-right').click();
           expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(0);
         });
@@ -168,7 +169,7 @@ describe('NgxTinyCarouselComponent', () => {
 
       describe('先頭の要素の場合', () => {
         it('currentCellIndexが最終要素に設定される', () => {
-          hostComponent.tinyCarouselComponent!.currentCellIndex = 0
+          hostComponent.tinyCarouselComponent!.currentCellIndex = 0;
           hostFixture.nativeElement.querySelector('.arrow-left').click();
           expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(hostComponent.tinyCarouselComponent!.totalCells - 1);
         });
@@ -192,7 +193,10 @@ describe('NgxTinyCarouselComponent', () => {
       ${2}             | ${'translateX(-1200px)'}
       ${3}             | ${'translateX(-1600px)'}
       ${4}             | ${'translateX(-0px)'}
-      `('現在の表示セルが$currentCellIndexの時、次へボタンを押した場合、transformの値は$transformになる', ({currentCellIndex, transform}) => {
+      `('現在の表示セルが$currentCellIndexの時、次へボタンを押した場合、transformの値は$transformになる', ({
+                                                                                                                                                                                                                                                                                                                                                          currentCellIndex,
+                                                                                                                                                                                                                                                                                                                                                          transform,
+                                                                                                                                                                                                                                                                                                                                                        }) => {
         hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
         hostFixture.nativeElement.querySelector('.arrow-right').click();
         expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.transform).toBe(transform);
@@ -205,7 +209,10 @@ describe('NgxTinyCarouselComponent', () => {
       ${2}             | ${'translateX(-400px)'}
       ${3}             | ${'translateX(-800px)'}
       ${4}             | ${'translateX(-1200px)'}
-      `('現在の表示セルが$currentCellIndexの時、前へボタンを押した場合、transformの値は$transformになる', ({currentCellIndex, transform}) => {
+      `('現在の表示セルが$currentCellIndexの時、前へボタンを押した場合、transformの値は$transformになる', ({
+                                                                                                                                                                                                                                                                                                                                                          currentCellIndex,
+                                                                                                                                                                                                                                                                                                                                                          transform,
+                                                                                                                                                                                                                                                                                                                                                        }) => {
         hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
         hostFixture.nativeElement.querySelector('.arrow-left').click();
         expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.transform).toBe(transform);
@@ -220,8 +227,12 @@ describe('NgxTinyCarouselComponent', () => {
     ${3}       | ${3}         | ${1}
     ${4}       | ${1}         | ${4}
     ${5}       | ${3}         | ${3}
-    `('要素数が$totalCells、同時表示数が$displayCellsの時、ドットは$dotCount個表示される', ({totalCells, displayCells, dotCount}) => {
-      hostComponent.tinyCarouselComponent!.totalCells = totalCells;
+    `('要素数が$totalCells、同時表示数が$displayCellsの時、ドットは$dotCount個表示される', ({
+                                                                                                                                                                                                                                                totalCells,
+                                                                                                                                                                                                                                                displayCells,
+                                                                                                                                                                                                                                                dotCount,
+                                                                                                                                                                                                                                              }) => {
+      hostComponent.tinyCarouselComponent!.totalCells   = totalCells;
       hostComponent.tinyCarouselComponent!.displayCells = displayCells;
       expect(hostComponent.tinyCarouselComponent?.dotCount).toBe(dotCount);
     });
