@@ -6,7 +6,7 @@ This library is lightweight carousel plugin for Angular.
 
 | ngx-tiny-carousel | Angular   |
 |-------------------|-----------|
-| 0.2.3             | \>=14.2.0 |
+| 0.3.0             | \>=14.2.0 |
 
 # Installation
 
@@ -123,10 +123,3 @@ Please give each `div` element a `cell` class.
 | [height]       | number | optional | 0       | If unset, it is set to the cell width.                                                                |
 | [cellWidth]    | number | optional | 0       | If unset, it is set to the width of the parent element.                                               |
 | [displayCells] | number | optional | 1       | Ignored if `cellWidth` is specified. You can specify the number of cells to be displayed at one time. |
-
-## @Output
-
-| @Output         | Type         | Required | Description                                                                                       |
-|-----------------|--------------|----------|---------------------------------------------------------------------------------------------------|
-| (carouselClick) | EventEmitter | optional | Fires when the carousel is clicked. The index of the carousel at the time of the click is passed. |
-

@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ArrowLeftComponent }                                                           from './component/arrow-left/arrow-left.component';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChild } from '@angular/core';
+import { ArrowLeftComponent }                                                                      from './component/arrow-left/arrow-left.component';
 import { ArrowRightComponent }                                                          from './component/arrow-right/arrow-right.component';
 import { DotsComponent }                                                                from './component/dots/dots.component';
 
@@ -21,14 +21,14 @@ export class NgxTinyCarouselComponent implements AfterViewInit
   @Input()
   public displayCells: number = 1;
 
-  @Output()
-  public carouselClick: EventEmitter<number> = new EventEmitter();
-
   @ViewChild('container')
   public container?: ElementRef;
 
   @ViewChild('cells')
   public cells?: ElementRef;
+
+  @ViewChild('arrows')
+  public arrows?: ElementRef;
 
   @ViewChild('arrowLeft')
   public arrowLeft?: ArrowLeftComponent;
@@ -48,6 +48,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit
   private translateXDistance: number = 0;
 
   private cellSelector: string = '.cell';
+
+  private arrowSelector: string = '.arrow';
 
   public ngAfterViewInit(): void
   {
@@ -131,6 +133,12 @@ export class NgxTinyCarouselComponent implements AfterViewInit
     Array.from(cellList).forEach((cell: HTMLElement, index: number) => {
       cell.style.width = `${this.cellWidth}px`;
       cell.style.left  = `${this.cellWidth * index}px`;
+    });
+
+    const arrows = this.arrows?.nativeElement.querySelectorAll(this.arrowSelector) as QueryList<HTMLElement>;
+
+    Array.from(arrows).forEach((arrow: HTMLElement) => {
+      arrow.style.top = `${this.height / 2}px`;
     });
 
     this.setUiScale();
