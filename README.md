@@ -6,7 +6,7 @@ This library is lightweight carousel plugin for Angular.
 
 | ngx-tiny-carousel | Angular   |
 |-------------------|-----------|
-| 0.4.0             | \>=14.2.0 |
+| \>=0.4.0          | \>=14.2.0 |
 
 # Installation
 

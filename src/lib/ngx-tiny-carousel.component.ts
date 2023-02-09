@@ -14,6 +14,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 {
   private static readonly ARROW_SCALE_BASE_DISTANCE = 400;
 
+  private static readonly CELL_TRANSFORM_DURATION = 400;
+
   @Input()
   public height: number = 0;
 
@@ -54,6 +56,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   private arrowSelector: string = '.arrow';
 
+  private activeCellClass: string = 'active';
+
   private contentSubscription?: Subscription;
 
   public ngAfterViewInit(): void
@@ -80,12 +84,15 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   {
     event.stopPropagation();
 
+    const currentIndex = this.currentCellIndex;
+
     if (this.currentCellIndex === 0) {
       this.currentCellIndex = this.maxCellIndex;
     } else {
       this.currentCellIndex--;
     }
 
+    this.activateCells(currentIndex, this.currentCellIndex);
     this.transform();
   }
 
@@ -93,20 +100,59 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   {
     event.stopPropagation();
 
+    const currentIndex = this.currentCellIndex;
+
     if (this.currentCellIndex >= this.maxCellIndex) {
       this.currentCellIndex = 0;
     } else {
       this.currentCellIndex++;
     }
 
+    this.activateCells(currentIndex, this.currentCellIndex);
     this.transform();
   }
 
   public jump(cellIndex: number): void
   {
+    const currentIndex = this.currentCellIndex;
+
     this.currentCellIndex = cellIndex;
 
+    this.activateCells(currentIndex, this.currentCellIndex);
     this.transform();
+  }
+
+  public activateCells(currentCellIndex: number, targetCellIndex: number): void
+  {
+    const range = (size: number, startAt: number = 0) => [...Array(size).keys()].map(i => i + startAt);
+
+    let activatedCellIndex: number[] = [];
+
+    if (currentCellIndex < targetCellIndex) {
+      activatedCellIndex = range(targetCellIndex - currentCellIndex + 1, currentCellIndex);
+    } else {
+      activatedCellIndex = range(currentCellIndex - targetCellIndex + 1, targetCellIndex);
+    }
+
+    if (this.cellList) {
+      Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
+        if (activatedCellIndex.includes(index)) {
+          cell.ElementRef.nativeElement.classList.add(this.activeCellClass);
+        } else {
+          cell.ElementRef.nativeElement.classList.remove(this.activeCellClass);
+        }
+      });
+
+      setTimeout(() => {
+        if (this.cellList) {
+          Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
+            if (targetCellIndex !== index) {
+              cell.ElementRef.nativeElement.classList.remove(this.activeCellClass);
+            }
+          });
+        }
+      }, NgxTinyCarouselComponent.CELL_TRANSFORM_DURATION);
+    }
   }
 
   public get dotCount(): number
@@ -147,11 +193,15 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
     const cells = this.cells.nativeElement as HTMLElement;
 
-    cells.style.width = `${this.cellWidth * this.totalCells}px`;
+    cells.style.width = `${this.cellWidth}px`;
 
     Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
       cell.ElementRef.nativeElement.style.width = `${this.cellWidth}px`;
       cell.ElementRef.nativeElement.style.left  = `${this.cellWidth * index}px`;
+
+      if (index === this.currentCellIndex) {
+        cell.ElementRef.nativeElement.classList.add(this.activeCellClass);
+      }
     });
 
     const arrows = this.arrows?.nativeElement.querySelectorAll(this.arrowSelector) as QueryList<HTMLElement>;

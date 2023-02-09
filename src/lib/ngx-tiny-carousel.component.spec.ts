@@ -108,10 +108,9 @@ describe('NgxTinyCarouselComponent', () => {
       expect(hostComponent.tinyCarouselComponent?.totalCells).toBe(5);
     });
 
-    it('子コンポーネントの親要素の幅が要素数x要素幅に設定される', () => {
-      const cellWidth  = hostComponent.tinyCarouselComponent!.cellWidth;
-      const totalCells = hostComponent.tinyCarouselComponent!.totalCells;
-      expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.width).toBe(`${cellWidth * totalCells}px`);
+    it('子コンポーネントの親要素の幅が要素幅に設定される', () => {
+      const cellWidth = hostComponent.tinyCarouselComponent!.cellWidth;
+      expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.width).toBe(`${cellWidth}px`);
     });
 
     it('各要素にwidthが設定される', () => {
