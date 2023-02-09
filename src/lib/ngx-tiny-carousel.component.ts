@@ -60,6 +60,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   private contentSubscription?: Subscription;
 
+  private activateTimer: any;
+
   public ngAfterViewInit(): void
   {
     setTimeout(this.initialize.bind(this));
@@ -124,6 +126,10 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   public activateCells(currentCellIndex: number, targetCellIndex: number): void
   {
+    if (this.activateTimer) {
+      clearTimeout(this.activateTimer);
+    }
+
     const range = (size: number, startAt: number = 0) => [...Array(size).keys()].map(i => i + startAt);
 
     let activatedCellIndex: number[] = [];
@@ -138,12 +144,10 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
       Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
         if (activatedCellIndex.includes(index)) {
           cell.ElementRef.nativeElement.classList.add(this.activeCellClass);
-        } else {
-          cell.ElementRef.nativeElement.classList.remove(this.activeCellClass);
         }
       });
 
-      setTimeout(() => {
+      this.activateTimer = setTimeout(() => {
         if (this.cellList) {
           Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
             if (targetCellIndex !== index) {
@@ -169,9 +173,13 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   private transform(): void
   {
-    if (this.cells) {
-      this.cells.nativeElement.style.transform = `translateX(-${this.translateXDistance * this.currentCellIndex}px)`;
-    }
+    setTimeout(() => {
+      if (this.cellList) {
+        Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent) => {
+          cell.ElementRef.nativeElement.style.transform = `translateX(-${this.currentCellIndex * this.translateXDistance}px)`;
+        });
+      }
+    });
   }
 
   private initialize(): void
@@ -198,11 +206,9 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     Array.from(this.cellList).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
       cell.ElementRef.nativeElement.style.width = `${this.cellWidth}px`;
       cell.ElementRef.nativeElement.style.left  = `${this.cellWidth * index}px`;
-
-      if (index === this.currentCellIndex) {
-        cell.ElementRef.nativeElement.classList.add(this.activeCellClass);
-      }
     });
+
+    this.jump(this.currentCellIndex);
 
     const arrows = this.arrows?.nativeElement.querySelectorAll(this.arrowSelector) as QueryList<HTMLElement>;
 

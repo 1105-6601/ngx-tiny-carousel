@@ -198,7 +198,8 @@ describe('NgxTinyCarouselComponent', () => {
                                                                                                                                                                                                                                                                                                                                                         }) => {
         hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
         hostFixture.nativeElement.querySelector('.arrow-right').click();
-        expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.transform).toBe(transform);
+        jest.runAllTimers();
+        expect(hostComponent.tinyCarouselComponent?.cellList?.get(0)?.ElementRef.nativeElement.style.transform).toBe(transform);
       });
 
       test.each`
@@ -214,7 +215,8 @@ describe('NgxTinyCarouselComponent', () => {
                                                                                                                                                                                                                                                                                                                                                         }) => {
         hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
         hostFixture.nativeElement.querySelector('.arrow-left').click();
-        expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.transform).toBe(transform);
+        jest.runAllTimers();
+        expect(hostComponent.tinyCarouselComponent?.cellList?.get(0)?.ElementRef.nativeElement.style.transform).toBe(transform);
       });
     });
   });

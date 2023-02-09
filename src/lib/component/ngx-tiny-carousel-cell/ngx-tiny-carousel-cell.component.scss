@@ -1,8 +1,9 @@
 :host {
-  display: none;
-  height: 100%;
+  transition: transform 400ms ease-in-out 0s;
   box-sizing: border-box;
   position: absolute;
+  display: none;
+  height: 100%;
   top: 0;
 
   &.active {
