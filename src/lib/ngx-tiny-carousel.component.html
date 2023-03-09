@@ -1,14 +1,16 @@
-<div class="carousel-container" #container [style.height.px]="height">
-  <div class="cells" #cells>
-    <ng-content></ng-content>
+<div class="carousel-container" [ngClass]="{'scroll-virtualized': enableInfiniteScroll, 'draggable': enableDrag}" [style.height.px]="containerHeight" #container>
+  <div class="cell-container" #cellContainer [style.height.px]="cellContainerHeight">
+    <div class="cell-container-inner" #cellContainerInner>
+      <ng-content></ng-content>
+    </div>
   </div>
-  <div class="arrows" #arrows>
-    <div class="arrow arrow-left" (click)="prev($event)">
+  <div class="arrows" #arrows *ngIf="displayArrows">
+    <div class="arrow arrow-left" (click)="$event.stopPropagation(); prev(1)">
       <arrow-left *ngIf="!!uiScale && dotCount > 1" #arrowLeft [uiScale]="uiScale"></arrow-left>
     </div>
-    <div class="arrow arrow-right" (click)="next($event)">
+    <div class="arrow arrow-right" (click)="$event.stopPropagation(); next(1)">
       <arrow-right *ngIf="!!uiScale && dotCount > 1" #arrowRight [uiScale]="uiScale"></arrow-right>
     </div>
   </div>
-  <dots *ngIf="!!uiScale" [dotCount]="dotCount" [currentIndex]="currentCellIndex" [uiScale]="uiScale" (dotSelect)="jump($event)" #dots></dots>
+  <dots *ngIf="displayDots && !!uiScale" [dotPosition]="dotPosition" [dotStyle]="dotStyle" [dotCount]="dotCount" [currentIndex]="currentCellIndex" [uiScale]="uiScale" (dotSelect)="jump($event)" #dots></dots>
 </div>

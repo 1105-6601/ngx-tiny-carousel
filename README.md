@@ -20,17 +20,16 @@ Add Module.
 
 ```typescript
 @NgModule({
-  
-  ...
-    
-  imports:   [
-    ...
-      
+  //
+  imports: [
+    //
     NgxTinyCarouselModule,
-  
-    ...
+    //
   ],
-  bootstrap: [...]
+
+  bootstrap: [
+    //
+  ],
 })
 export class AppModule
 {
@@ -40,6 +39,7 @@ export class AppModule
 # Usage
 
 ```html
+
 <div style="width: 400px;">
   <ngx-tiny-carousel [displayCells]="1">
     <ngx-tiny-carousel-cell>
@@ -112,8 +112,23 @@ export class CarouselComponent
 
 ## @Input
 
-| @Input         | Type   | Required | Default | Description                                                                                           |
-|----------------|--------|----------|---------|-------------------------------------------------------------------------------------------------------|
-| [height]       | number | optional | 0       | If unset, it is set to the cell width.                                                                |
-| [cellWidth]    | number | optional | 0       | If unset, it is set to the width of the parent element.                                               |
-| [displayCells] | number | optional | 1       | Ignored if `cellWidth` is specified. You can specify the number of cells to be displayed at one time. |
+| @Input                 | Type    | Required | Default | Description                                                                                                 |
+|------------------------|---------|----------|---------|-------------------------------------------------------------------------------------------------------------|
+| [displayCells]         | number  | optional | 1       | Cell count to be displayed at once.                                                                         |
+| [cellHeightScale]      | number  | optional | 1       | Specifies the ratio of the cell height to the cell width.                                                   |
+| [dotPosition]          | string  | optional | 'inner' | 'inner' or 'outer'.                                                                                         |
+| [dotStyle]             | string  | optional | 'dot'   | 'dot' or 'bar'.                                                                                             |
+| [uiScale]              | number  | optional | none    | UI scale of dots and arrows. This will be calculated in response to container element height automatically. |
+| [displayArrows]        | boolean | optional | true    | Decide to display arrows or not.                                                                            |
+| [displayDots]          | boolean | optional | true    | Decide to display dots or not.                                                                              |
+| [enableDrag]           | boolean | optional | false   | If set true, The carousel becomes draggable.                                                                |
+| [enableInfiniteScroll] | boolean | optional | false   | Must be used with the `enableDrag` option. If set true, The carousel becomes infinite scroll.               |
+
+## Functions
+
+| Definition              | Description                                                 |
+|-------------------------|-------------------------------------------------------------|
+| next(count: number = 1) | Move to positive direction as much as specified cell count. |
+| prev(count: number = 1) | Move to negative direction as much as specified cell count. |
+| jump(cellIndex: number) | Move to specific cell index.                                |
+

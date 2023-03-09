@@ -3,9 +3,26 @@
   overflow: hidden;
   position: relative;
 
-  .cells {
-    height: 100%;
+  .cell-container {
     position: relative;
+    width: 100%;
+
+    .cell-container-inner {
+      height: 100%;
+    }
+  }
+
+  &.draggable {
+    .cell-container {
+      cursor: grab;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scrollbar-width: none; // Firefox対応のスクロールバー非表示コード
+      -ms-overflow-style: none; // Internet Explore対応のスクロールバー非表示コード
+      &::-webkit-scrollbar {
+        display: none; // Google Chrome、Safari、Microsoft Edge対応のスクロールバー非表示コード
+      }
+    }
   }
 
   .arrows {

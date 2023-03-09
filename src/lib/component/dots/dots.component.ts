@@ -1,5 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 
+export type DotPosition = 'inner' | 'outer';
+
+export type DotStyle = 'dot' | 'bar';
+
 @Component({
   selector:    'dots',
   templateUrl: './dots.component.html',
@@ -15,6 +19,12 @@ export class DotsComponent
 
   @Input()
   public uiScale: number = 1;
+
+  @Input()
+  public dotPosition: DotPosition = 'inner';
+
+  @Input()
+  public dotStyle: DotStyle = 'dot';
 
   @Output()
   public dotSelect: EventEmitter<number> = new EventEmitter();

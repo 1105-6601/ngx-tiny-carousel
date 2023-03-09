@@ -13,19 +13,19 @@ jest.useFakeTimers();
               <div>
                 <ngx-tiny-carousel #tinyCarouselComponent>
                   <ngx-tiny-carousel-cell>
-                    <img src="https://picsum.photos/300/400" alt="">
+                    <div>cell</div>
                   </ngx-tiny-carousel-cell>
                   <ngx-tiny-carousel-cell>
-                    <img src="https://picsum.photos/300/400" alt="">
+                    <div>cell</div>
                   </ngx-tiny-carousel-cell>
                   <ngx-tiny-carousel-cell>
-                    <img src="https://picsum.photos/300/400" alt="">
+                    <div>cell</div>
                   </ngx-tiny-carousel-cell>
                   <ngx-tiny-carousel-cell>
-                    <img src="https://picsum.photos/300/400" alt="">
+                    <div>cell</div>
                   </ngx-tiny-carousel-cell>
                   <ngx-tiny-carousel-cell>
-                    <img src="https://picsum.photos/300/400" alt="">
+                    <div>cell</div>
                   </ngx-tiny-carousel-cell>
                 </ngx-tiny-carousel>
               </div>
@@ -60,62 +60,191 @@ describe('NgxTinyCarouselComponent', () => {
   });
 
   beforeEach(() => {
-    // `clientWidth`読み取り時`400`が返るようにエミュレート
-    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {configurable: true, value: 400});
+    // `clientWidth`をエミュレート
+    const containerWidth = 400;
+    jest.spyOn<any, any, any>(hostComponent.tinyCarouselComponent?.container?.nativeElement, 'clientWidth', 'get').mockImplementation(() => {
+      return containerWidth;
+    });
+    jest.spyOn<any, any, any>(hostComponent.tinyCarouselComponent?.cellContainer?.nativeElement, 'clientWidth', 'get').mockImplementation(() => {
+      return containerWidth;
+    });
+    jest.spyOn<any, any, any>(hostComponent.tinyCarouselComponent?.cellContainerInner?.nativeElement, 'clientWidth', 'get').mockImplementation(() => {
+      return containerWidth * 5;
+    });
   });
 
   describe('コンポーネント生成時', () => {
-
-    beforeEach(() => {
-      jest.runAllTimers();
+    it('セルを検出する', () => {
+      expect(hostComponent.tinyCarouselComponent?.cells?.length).toBe(5);
     });
 
-    describe('要素幅が', () => {
-      describe('設定されていない場合', () => {
-        it('ルート要素の幅が要素幅として設定される', () => {
-          expect(hostComponent.tinyCarouselComponent?.cellWidth).toBe(400);
+    describe('初期化処理後', () => {
+
+      it('各セルにwidthが設定される', () => {
+        jest.runAllTimers();
+        hostComponent.tinyCarouselComponent?.cells?.forEach((cell) => {
+          expect(cell?.ElementRef.nativeElement.style.width).toBe('400px');
         });
       });
 
-      describe('設定されている場合', () => {
+      it('各矢印にtopのスタイルが付与される', () => {
+        jest.runAllTimers();
+        Array.from(hostComponent.tinyCarouselComponent!.arrows!.nativeElement.querySelectorAll('.arrow')).forEach((arrow: any) => {
+          expect(arrow.style.top).toBe('200px');
+        });
+      });
+
+      describe('UIスケールは', () => {
         beforeEach(() => {
-          hostComponent.tinyCarouselComponent!.cellWidth = 600;
+          hostComponent.tinyCarouselComponent!.cellContainerHeight = 700;
         });
-        it('設定が維持される', () => {
-          expect(hostComponent.tinyCarouselComponent?.cellWidth).toBe(600);
+        describe('設定されていない場合', () => {
+          beforeEach(() => {
+            jest.runAllTimers();
+          });
+          it('自動的にUIスケールが計算される', () => {
+            expect(hostComponent.tinyCarouselComponent!.uiScale).toBe(1.75);
+          });
+        });
+        describe('設定されている場合', () => {
+          beforeEach(() => {
+            hostComponent.tinyCarouselComponent!.uiScale = 2;
+            jest.runAllTimers();
+          });
+          it('自動的にUIスケールが計算される', () => {
+            expect(hostComponent.tinyCarouselComponent!.uiScale).toBe(2);
+          });
         });
       });
     });
 
-    describe('カルーセルの高さが', () => {
+    describe('セル幅は', () => {
       describe('設定されていない場合', () => {
-        it('要素幅が高さとして設定される', () => {
-          expect(hostComponent.tinyCarouselComponent?.height).toBe(hostComponent.tinyCarouselComponent?.cellWidth);
-        });
-      });
-
-      describe('設定されている場合', () => {
         beforeEach(() => {
-          hostComponent.tinyCarouselComponent!.height = 700;
+          jest.runAllTimers();
         });
-        it('設定が維持される', () => {
-          expect(hostComponent.tinyCarouselComponent?.height).toBe(700);
+        it('ルート要素の幅がセル幅として設定される', () => {
+          expect(hostComponent.tinyCarouselComponent?.cells?.get(0)?.ElementRef.nativeElement.style.width).toBe('400px');
         });
       });
     });
 
-    it('子コンポーネントをカルーセルの要素として検出する', () => {
-      expect(hostComponent.tinyCarouselComponent?.totalCells).toBe(5);
+    describe('セルコンテナの高さは', () => {
+      describe('設定されていない場合', () => {
+        beforeEach(() => {
+          hostComponent.tinyCarouselComponent!.cellHeightScale = 2;
+          jest.runAllTimers();
+        });
+        it('「セル幅 x セルの高さ倍率」が高さとして設定される', () => {
+          expect(hostComponent.tinyCarouselComponent?.cellContainerHeight).toBe(800);
+        });
+      });
     });
 
-    it('子コンポーネントの親要素の幅が要素幅に設定される', () => {
-      const cellWidth = hostComponent.tinyCarouselComponent!.cellWidth;
-      expect(hostComponent.tinyCarouselComponent?.cells?.nativeElement.style.width).toBe(`${cellWidth}px`);
+    describe('ドラッグ処理が', () => {
+      describe('無効化されている場合', () => {
+        beforeEach(() => {
+          hostComponent.tinyCarouselComponent!.enableDrag = false;
+          jest.runAllTimers();
+        });
+
+        it('transform()が呼ばれ各セルにtransformスタイルが設定される', () => {
+          hostComponent.tinyCarouselComponent?.cells?.forEach((cell) => {
+            expect(cell?.ElementRef.nativeElement.style.transform).toContain('translateX');
+          });
+        });
+      });
+
+      describe('有効化されている場合', () => {
+
+        beforeEach(() => {
+          hostComponent.tinyCarouselComponent!.enableDrag = true;
+        });
+
+        it('全てのセルがアクティブ化される', () => {
+          jest.runAllTimers();
+          hostComponent.tinyCarouselComponent?.cells?.forEach((cell) => {
+            expect(cell?.ElementRef.nativeElement.classList).toContain('active');
+          });
+        });
+
+        describe('各種イベントがバインドされる', () => {
+
+          const mockAddEventListener = jest.fn();
+
+          beforeEach(() => {
+            hostComponent.tinyCarouselComponent!.cellContainer!.nativeElement.addEventListener      = mockAddEventListener;
+            hostComponent.tinyCarouselComponent!.cellContainerInner!.nativeElement.addEventListener = mockAddEventListener;
+            jest.runAllTimers();
+          });
+
+          it('ルートコンテナにスクロールイベントがバインドされる', () => {
+            expect(mockAddEventListener).toHaveBeenCalledWith('scroll', expect.any(Function));
+          });
+
+          it('セルインナーコンテナに各種ドラッグ機能用のイベントがバインドされる', () => {
+            expect(mockAddEventListener).toHaveBeenCalledWith('mousedown', expect.any(Function));
+            expect(mockAddEventListener).toHaveBeenCalledWith('mousemove', expect.any(Function));
+            expect(mockAddEventListener).toHaveBeenCalledWith('mouseup', expect.any(Function));
+            expect(mockAddEventListener).toHaveBeenCalledWith('mouseleave', expect.any(Function));
+          });
+        });
+
+        describe('セルインナーコンテナは', () => {
+          describe('無限スクロールが無効化されている場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.enableInfiniteScroll = false;
+              jest.runAllTimers();
+            });
+            it('「セル幅 x セル数」に設定される', () => {
+              expect(hostComponent.tinyCarouselComponent?.cellContainerInner?.nativeElement.style.width).toBe('2000px');
+            });
+          });
+
+          describe('無限スクロールが有効化されている場合', () => {
+
+            const mockScrollTo = jest.fn();
+
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.enableInfiniteScroll                  = true;
+              hostComponent.tinyCarouselComponent!.cellContainer!.nativeElement.scrollTo = mockScrollTo;
+              jest.runAllTimers();
+            });
+            it('「セル幅 x セル数 x INFINITE_SCROLL_MAX_LOOP_COUNT」に設定され', () => {
+              expect(hostComponent.tinyCarouselComponent?.cellContainerInner?.nativeElement.style.width).toBe('14000px');
+            });
+            it('その後セルコンテナのscrollTo()が呼び出される', () => {
+              expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'left': 6001}));
+            });
+          });
+        });
+      });
     });
 
-    it('各要素にwidthが設定される', () => {
-      const cell = hostComponent.tinyCarouselComponent?.cellList?.get(0);
-      expect(cell?.ElementRef.nativeElement.style.width).toBe(`${hostComponent.tinyCarouselComponent!.cellWidth}px`);
+    describe('ルートコンテナの高さは', () => {
+      describe('設定されていない場合', () => {
+        describe('ドットポジションが', () => {
+          describe('インナー表示の場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.dotPosition = 'inner';
+              jest.runAllTimers();
+            });
+            it('セルコンテナの高さと同様のものが設定される', () => {
+              expect(hostComponent.tinyCarouselComponent?.containerHeight).toBe(400);
+            });
+          });
+
+          describe('アウター表示の場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.dotPosition = 'outer';
+              jest.runAllTimers();
+            });
+            it('セルコンテナを1.15倍したのもが設定される', () => {
+              expect(hostComponent.tinyCarouselComponent?.containerHeight).toBe(Math.round(400 * 1.15));
+            });
+          });
+        });
+      });
     });
   });
 
@@ -127,115 +256,171 @@ describe('NgxTinyCarouselComponent', () => {
       ${200} | ${0.5}
       ${100} | ${0.25}
       `('高さが$heightの時、UIスケールは$scaleになる', ({height, scale}) => {
-      hostComponent.tinyCarouselComponent!.height = height;
+      hostComponent.tinyCarouselComponent!.cellContainerHeight = height;
       jest.runAllTimers();
       expect(hostComponent.tinyCarouselComponent?.uiScale).toBe(scale);
     });
   });
 
   describe('UIのテスト', () => {
+    describe('ドラッグ機能が', () => {
+      describe('無効の場合', () => {
+        beforeEach(() => {
+          hostComponent.tinyCarouselComponent!.enableDrag = false;
+          jest.runAllTimers();
+        });
+        describe('次へボタンを押した際', () => {
+          describe('末尾の要素でない場合', () => {
+            it('currentCellIndexが加算される', () => {
+              hostFixture.nativeElement.querySelector('.arrow-right').click();
+              expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(1);
+            });
+          });
 
-    beforeEach(() => {
-      jest.runAllTimers();
-      hostFixture.detectChanges();
-    });
+          describe('末尾の要素の場合', () => {
+            it('currentCellIndexが0に戻る', () => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 4;
+              hostFixture.nativeElement.querySelector('.arrow-right').click();
+              expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(0);
+            });
+          });
+        });
 
-    describe('次へボタンを押した際', () => {
-      describe('末尾の要素でない場合', () => {
-        it('currentCellIndexが加算される', () => {
-          hostFixture.nativeElement.querySelector('.arrow-right').click();
-          expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(1);
+        describe('戻るボタンを押した際', () => {
+          describe('先頭の要素でない場合', () => {
+            it('currentCellIndexが減算される', () => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 3;
+              hostFixture.nativeElement.querySelector('.arrow-left').click();
+              expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(2);
+            });
+          });
+
+          describe('先頭の要素の場合', () => {
+            it('currentCellIndexが最終要素に設定される', () => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 0;
+              hostFixture.nativeElement.querySelector('.arrow-left').click();
+              expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(4);
+            });
+          });
+        });
+
+        describe('ドットUIの', () => {
+          beforeEach(() => {
+            hostFixture.detectChanges();
+          });
+          test.each`
+              dotIndex | transform
+              ${0}     | ${0}
+              ${1}     | ${400}
+              ${2}     | ${800}
+              ${3}     | ${1200}
+              ${4}     | ${1600}
+              `('$dotIndex番目をクリックした際、transformは - $transform pxとなる', ({dotIndex, transform}) => {
+            hostComponent.tinyCarouselComponent?.container?.nativeElement.querySelector(`.dot:nth-child(${dotIndex + 1})`).click();
+            jest.runOnlyPendingTimers();
+            expect(hostComponent.tinyCarouselComponent?.cells?.get(0)?.ElementRef.nativeElement.style.transform).toBe(`translateX(-${transform}px)`);
+          });
         });
       });
 
-      describe('末尾の要素の場合', () => {
-        it('currentCellIndexが0に戻る', () => {
-          hostComponent.tinyCarouselComponent!.currentCellIndex = hostComponent.tinyCarouselComponent!.totalCells - 1;
-          hostFixture.nativeElement.querySelector('.arrow-right').click();
-          expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(0);
+      describe('有効の場合', () => {
+
+        const mockScrollTo = jest.fn();
+
+        beforeEach(() => {
+          hostComponent.tinyCarouselComponent!.cellContainer!.nativeElement.scrollTo = mockScrollTo;
+          hostComponent.tinyCarouselComponent!.enableDrag                            = true;
+          jest.runOnlyPendingTimers();
+        });
+
+        describe('次へボタンを押した際', () => {
+          describe('末尾の要素でない場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 0;
+              hostFixture.nativeElement.querySelector('.arrow-right').click();
+            });
+            it('セルコンテナのスクロール量がセル幅分増加される', () => {
+              expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': 400}));
+            });
+          });
+
+          describe('末尾の要素の場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 4;
+            });
+            describe('無限スクロールが無効の場合', () => {
+              it('セルコンテナのスクロール量がゼロになる', () => {
+                hostFixture.nativeElement.querySelector('.arrow-right').click();
+                expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': 0}));
+              });
+            });
+
+            describe('無限スクロールが有効の場合', () => {
+              beforeEach(() => {
+                hostComponent.tinyCarouselComponent!.enableInfiniteScroll                    = true;
+                hostComponent.tinyCarouselComponent!.cellContainer!.nativeElement.scrollLeft = 1600;
+                hostFixture.nativeElement.querySelector('.arrow-right').click();
+              });
+              it('セルコンテナのスクロール量にセル幅が強制的に加算される', () => {
+                expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': 2000}));
+              });
+            });
+          });
+        });
+
+        describe('戻るボタンを押した際', () => {
+          describe('先頭の要素でない場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 4;
+              hostFixture.nativeElement.querySelector('.arrow-left').click();
+            });
+            it('セルコンテナのスクロール量がセル幅分減算される', () => {
+              expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': 1200}));
+            });
+          });
+
+          describe('先頭の要素の場合', () => {
+            beforeEach(() => {
+              hostComponent.tinyCarouselComponent!.currentCellIndex = 0;
+            });
+
+            describe('無限スクロールが無効の場合', () => {
+              it('セルコンテナのスクロール量が最大値になる', () => {
+                hostFixture.nativeElement.querySelector('.arrow-left').click();
+                expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': 1600}));
+              });
+            });
+
+            describe('無限スクロールが有効の場合', () => {
+              beforeEach(() => {
+                hostComponent.tinyCarouselComponent!.enableInfiniteScroll                    = true;
+                hostComponent.tinyCarouselComponent!.cellContainer!.nativeElement.scrollLeft = 0;
+                hostFixture.nativeElement.querySelector('.arrow-left').click();
+              });
+              it('セルコンテナのスクロール量からセル幅が強制的に減算される', () => {
+                expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': -400}));
+              });
+            });
+          });
+        });
+
+        describe('ドットUIの', () => {
+          beforeEach(() => {
+            hostFixture.detectChanges();
+          });
+          test.each`
+              dotIndex | scrollLeft
+              ${0}     | ${0}
+              ${1}     | ${400}
+              ${2}     | ${800}
+              ${3}     | ${1200}
+              ${4}     | ${1600}
+              `('$dotIndex番目をクリックした際、スクロール量は$scrollLeft pxとなる', ({dotIndex, scrollLeft}) => {
+            hostComponent.tinyCarouselComponent?.container?.nativeElement.querySelector(`.dot:nth-child(${dotIndex + 1})`).click();
+            expect(mockScrollTo).toHaveBeenCalledWith(expect.objectContaining({'behavior': 'smooth', 'left': scrollLeft}));
+          });
         });
       });
-    });
-
-    describe('戻るボタンを押した際', () => {
-      describe('先頭の要素でない場合', () => {
-        it('currentCellIndexが減算される', () => {
-          hostComponent.tinyCarouselComponent!.currentCellIndex = 3;
-          hostFixture.nativeElement.querySelector('.arrow-left').click();
-          expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(2);
-        });
-      });
-
-      describe('先頭の要素の場合', () => {
-        it('currentCellIndexが最終要素に設定される', () => {
-          hostComponent.tinyCarouselComponent!.currentCellIndex = 0;
-          hostFixture.nativeElement.querySelector('.arrow-left').click();
-          expect(hostComponent.tinyCarouselComponent?.currentCellIndex).toBe(hostComponent.tinyCarouselComponent!.totalCells - 1);
-        });
-      });
-    });
-  });
-
-  describe('UIのtransformテスト', () => {
-
-    beforeEach(() => {
-      jest.runAllTimers();
-      hostFixture.detectChanges();
-    });
-
-    describe('要素幅が400pxの場合', () => {
-
-      test.each`
-      currentCellIndex | transform
-      ${0}             | ${'translateX(-400px)'}
-      ${1}             | ${'translateX(-800px)'}
-      ${2}             | ${'translateX(-1200px)'}
-      ${3}             | ${'translateX(-1600px)'}
-      ${4}             | ${'translateX(-0px)'}
-      `('現在の表示セルが$currentCellIndexの時、次へボタンを押した場合、transformの値は$transformになる', ({
-                                                                                                                                                                                                                                                                                                                                                          currentCellIndex,
-                                                                                                                                                                                                                                                                                                                                                          transform,
-                                                                                                                                                                                                                                                                                                                                                        }) => {
-        hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
-        hostFixture.nativeElement.querySelector('.arrow-right').click();
-        jest.runAllTimers();
-        expect(hostComponent.tinyCarouselComponent?.cellList?.get(0)?.ElementRef.nativeElement.style.transform).toBe(transform);
-      });
-
-      test.each`
-      currentCellIndex | transform
-      ${0}             | ${'translateX(-1600px)'}
-      ${1}             | ${'translateX(-0px)'}
-      ${2}             | ${'translateX(-400px)'}
-      ${3}             | ${'translateX(-800px)'}
-      ${4}             | ${'translateX(-1200px)'}
-      `('現在の表示セルが$currentCellIndexの時、前へボタンを押した場合、transformの値は$transformになる', ({
-                                                                                                                                                                                                                                                                                                                                                          currentCellIndex,
-                                                                                                                                                                                                                                                                                                                                                          transform,
-                                                                                                                                                                                                                                                                                                                                                        }) => {
-        hostComponent.tinyCarouselComponent!.currentCellIndex = currentCellIndex;
-        hostFixture.nativeElement.querySelector('.arrow-left').click();
-        jest.runAllTimers();
-        expect(hostComponent.tinyCarouselComponent?.cellList?.get(0)?.ElementRef.nativeElement.style.transform).toBe(transform);
-      });
-    });
-  });
-
-  describe('ドット数の計算テスト', () => {
-    test.each`
-    totalCells | displayCells | dotCount
-    ${2}       | ${3}         | ${0}
-    ${3}       | ${3}         | ${1}
-    ${4}       | ${1}         | ${4}
-    ${5}       | ${3}         | ${3}
-    `('要素数が$totalCells、同時表示数が$displayCellsの時、ドットは$dotCount個表示される', ({
-                                                                                                                                                                                                                                                totalCells,
-                                                                                                                                                                                                                                                displayCells,
-                                                                                                                                                                                                                                                dotCount,
-                                                                                                                                                                                                                                              }) => {
-      hostComponent.tinyCarouselComponent!.totalCells   = totalCells;
-      hostComponent.tinyCarouselComponent!.displayCells = displayCells;
-      expect(hostComponent.tinyCarouselComponent?.dotCount).toBe(dotCount);
     });
   });
 });

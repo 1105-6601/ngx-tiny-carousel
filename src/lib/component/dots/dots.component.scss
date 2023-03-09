@@ -1,5 +1,10 @@
+@import '../../styles';
+
 .dots {
-  transform-origin: bottom;
+
+  @include disable-selection();
+
+  transform-origin: bottom center;
   text-align: center;
   width: 100%;
   height: 0;
@@ -21,6 +26,22 @@
 
     &.active {
       opacity: 1;
+    }
+  }
+
+  &.dot-style-bar {
+    .dot {
+      border-radius: 0;
+      width: 20px;
+      height: 5px;
+      margin: 0;
+    }
+
+    &.dot-position-outer {
+      bottom: 11.5%;
+    }
+    &.dot-position-inner {
+      bottom: 15%;
     }
   }
 }
