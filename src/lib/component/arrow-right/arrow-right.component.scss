@@ -4,10 +4,12 @@
   svg {
     transform-origin: center right;
     filter: drop-shadow(1px 1px 5px rgba(0, 0, 0, .5));
+    margin-right: 8px;
 
     &.circle {
       padding: 8px;
       margin-right: 10px;
+      box-sizing: border-box;
       background-color: #fff;
       background-repeat: no-repeat;
       background-size: 30px;

@@ -21,7 +21,6 @@ export class ArrowRightComponent implements OnInit
   public ngOnInit(): void
   {
     if (this.arrowStyle === 'circle') {
-      this.size = '15px';
       this.fill = '#000';
     }
   }
