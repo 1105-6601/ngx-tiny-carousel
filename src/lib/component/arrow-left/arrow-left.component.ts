@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { ArrowStyle }                                      from '../../ngx-tiny-carousel.component';
+import { ArrowStyle }                                      from '../arrow/types';
 
 @Component({
   selector:    'arrow-left',

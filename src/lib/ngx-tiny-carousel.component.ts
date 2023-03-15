@@ -3,11 +3,10 @@ import { ArrowLeftComponent }                                                   
 import { ArrowRightComponent }                                                                                             from './component/arrow-right/arrow-right.component';
 import { DotPosition, DotsComponent, DotStyle }                                                                            from './component/dots/dots.component';
 import { NgxTinyCarouselCellComponent }                                                                                    from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
+import { ArrowStyle }                                                                                                      from './component/arrow/types';
 import { Subscription }                                                                                                    from 'rxjs';
 
 type TransformKind = 'jump' | 'next' | 'prev';
-
-export type ArrowStyle = 'default' | 'circle';
 
 @Component({
   selector:    'ngx-tiny-carousel',
