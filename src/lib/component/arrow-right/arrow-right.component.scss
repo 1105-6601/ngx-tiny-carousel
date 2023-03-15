@@ -4,5 +4,14 @@
   svg {
     transform-origin: center right;
     filter: drop-shadow(1px 1px 5px rgba(0, 0, 0, .5));
+
+    &.circle {
+      padding: 8px;
+      margin-right: 10px;
+      background-color: #fff;
+      background-repeat: no-repeat;
+      background-size: 30px;
+      border-radius: 100px;
+    }
   }
 }

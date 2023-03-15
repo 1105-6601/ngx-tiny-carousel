@@ -1,11 +1,13 @@
 import { AfterContentInit, AfterViewInit, Component, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewChild } from '@angular/core';
 import { ArrowLeftComponent }                                                                                              from './component/arrow-left/arrow-left.component';
-import { ArrowRightComponent }                  from './component/arrow-right/arrow-right.component';
-import { DotPosition, DotsComponent, DotStyle } from './component/dots/dots.component';
-import { NgxTinyCarouselCellComponent }         from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
+import { ArrowRightComponent }                                                                                             from './component/arrow-right/arrow-right.component';
+import { DotPosition, DotsComponent, DotStyle }                                                                            from './component/dots/dots.component';
+import { NgxTinyCarouselCellComponent }                                                                                    from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
 import { Subscription }                                                                                                    from 'rxjs';
 
 type TransformKind = 'jump' | 'next' | 'prev';
+
+export type ArrowStyle = 'default' | 'circle';
 
 @Component({
   selector:    'ngx-tiny-carousel',
@@ -31,6 +33,9 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   @Input()
   public dotStyle: DotStyle = 'dot';
+
+  @Input()
+  public arrowStyle: ArrowStyle = 'default';
 
   @Input()
   public uiScale: number = 0;

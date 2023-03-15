@@ -6,10 +6,10 @@
   </div>
   <div class="arrows" #arrows *ngIf="displayArrows">
     <div class="arrow arrow-left" (click)="$event.stopPropagation(); prev(1)">
-      <arrow-left *ngIf="!!uiScale && dotCount > 1" #arrowLeft [uiScale]="uiScale"></arrow-left>
+      <arrow-left *ngIf="!!uiScale && dotCount > 1" #arrowLeft [uiScale]="uiScale" [arrowStyle]="arrowStyle"></arrow-left>
     </div>
     <div class="arrow arrow-right" (click)="$event.stopPropagation(); next(1)">
-      <arrow-right *ngIf="!!uiScale && dotCount > 1" #arrowRight [uiScale]="uiScale"></arrow-right>
+      <arrow-right *ngIf="!!uiScale && dotCount > 1" #arrowRight [uiScale]="uiScale" [arrowStyle]="arrowStyle"></arrow-right>
     </div>
   </div>
   <dots *ngIf="displayDots && !!uiScale" [dotPosition]="dotPosition" [dotStyle]="dotStyle" [dotCount]="dotCount" [currentIndex]="currentCellIndex" [uiScale]="uiScale" (dotSelect)="jump($event)" #dots></dots>

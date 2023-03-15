@@ -112,17 +112,18 @@ export class CarouselComponent
 
 ## @Input
 
-| @Input                 | Type    | Required | Default | Description                                                                                                 |
-|------------------------|---------|----------|---------|-------------------------------------------------------------------------------------------------------------|
-| [displayCells]         | number  | optional | 1       | Cell count to be displayed at once.                                                                         |
-| [cellHeightScale]      | number  | optional | 1       | Specifies the ratio of the cell height to the cell width.                                                   |
-| [dotPosition]          | string  | optional | 'inner' | 'inner' or 'outer'.                                                                                         |
-| [dotStyle]             | string  | optional | 'dot'   | 'dot' or 'bar'.                                                                                             |
-| [uiScale]              | number  | optional | none    | UI scale of dots and arrows. This will be calculated in response to container element height automatically. |
-| [displayArrows]        | boolean | optional | true    | Decide to display arrows or not.                                                                            |
-| [displayDots]          | boolean | optional | true    | Decide to display dots or not.                                                                              |
-| [enableDrag]           | boolean | optional | false   | If set true, The carousel becomes draggable.                                                                |
-| [enableInfiniteScroll] | boolean | optional | false   | Must be used with the `enableDrag` option. If set true, The carousel becomes infinite scroll.               |
+| @Input                 | Type    | Required | Default   | Description                                                                                                 |
+|------------------------|---------|----------|-----------|-------------------------------------------------------------------------------------------------------------|
+| [displayCells]         | number  | optional | 1         | Cell count to be displayed at once.                                                                         |
+| [cellHeightScale]      | number  | optional | 1         | Specifies the ratio of the cell height to the cell width.                                                   |
+| [dotPosition]          | string  | optional | 'inner'   | 'inner' or 'outer'.                                                                                         |
+| [dotStyle]             | string  | optional | 'dot'     | 'dot' or 'bar'.                                                                                             |
+| [arrowStyle]           | string  | optional | 'default' | 'default' or 'circle'.                                                                                      |
+| [uiScale]              | number  | optional | none      | UI scale of dots and arrows. This will be calculated in response to container element height automatically. |
+| [displayArrows]        | boolean | optional | true      | Decide to display arrows or not.                                                                            |
+| [displayDots]          | boolean | optional | true      | Decide to display dots or not.                                                                              |
+| [enableDrag]           | boolean | optional | false     | If set true, The carousel becomes draggable.                                                                |
+| [enableInfiniteScroll] | boolean | optional | false     | Must be used with the `enableDrag` option. If set true, The carousel becomes infinite scroll.               |
 
 ## Functions
 
