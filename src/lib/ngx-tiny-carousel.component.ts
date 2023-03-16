@@ -51,6 +51,9 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   @Input()
   public enableInfiniteScroll: boolean = false;
 
+  @Input()
+  public cellWidth: number = 0;
+
   @ViewChild('container')
   public container?: ElementRef;
 
@@ -80,8 +83,6 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   public containerHeight: number = 0;
 
   public cellContainerHeight: number = 0;
-
-  private cellWidth: number = 0;
 
   private totalCells: number = 0;
 
