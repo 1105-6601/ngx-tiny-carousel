@@ -101,6 +101,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   private dragStarted: boolean = false;
 
+  private mouseMoved: boolean = false;
+
   private dragStartPosX: number = 0;
 
   private dragStartScrollLeft: number = 0;
@@ -474,17 +476,28 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
     targetElm.addEventListener('mousemove', (event: MouseEvent) => {
       if (this.dragStarted && this.cellContainer) {
-        const distance = event.clientX - this.dragStartPosX;
+        this.mouseMoved = true;
+        const distance  = event.clientX - this.dragStartPosX;
         this.cellContainer.nativeElement.scrollTo(this.dragStartScrollLeft - distance, 0);
       }
     });
 
     targetElm.addEventListener('mouseup', () => {
-      this.dragStarted = false;
+      setTimeout(() => {
+        this.dragStarted = false;
+        this.mouseMoved  = false;
+      });
     });
 
     targetElm.addEventListener('mouseleave', () => {
       this.dragStarted = false;
+      this.mouseMoved  = false;
     });
+
+    targetElm.addEventListener('click', (event: MouseEvent) => {
+      if (this.mouseMoved) {
+        event.stopPropagation();
+      }
+    }, true);
   }
 }
