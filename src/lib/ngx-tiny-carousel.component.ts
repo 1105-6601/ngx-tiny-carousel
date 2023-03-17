@@ -290,9 +290,10 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
       });
 
       const timer = setInterval(() => {
+        const threshold = 5;
         if (
-          targetLeft - 1 <= cellContainerElm.scrollLeft &&
-          targetLeft + 1 >= cellContainerElm.scrollLeft
+          targetLeft - threshold <= cellContainerElm.scrollLeft &&
+          targetLeft + threshold >= cellContainerElm.scrollLeft
         ) {
           this.transforming = false;
           clearInterval(timer);
@@ -400,7 +401,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     const actualScrollLeft = elm.scrollLeft - (this.cellWidth * this.totalCells * this.carouselLoopCount);
 
     // Tweak currentCellIndex.
-    const cellIndex       = Math.floor(actualScrollLeft / Math.floor(this.cellWidth));
+    const cellIndex       = Math.round(actualScrollLeft / Math.floor(this.cellWidth));
     this.currentCellIndex = cellIndex > this.totalCells - this.displayCells ? this.totalCells - this.displayCells : cellIndex;
 
     if (this.enableInfiniteScroll) {
