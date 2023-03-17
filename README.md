@@ -2,6 +2,10 @@
 
 This library is lightweight carousel plugin for Angular.
 
+# Demo
+
+https://1105-6601.github.io/ngx-tiny-carousel-demo/
+
 # Compatibility
 
 | ngx-tiny-carousel | Angular   |
