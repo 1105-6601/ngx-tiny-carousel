@@ -33,7 +33,7 @@ export class ArrowLeftComponent implements OnInit
     }
   }
 
-  public setScale(elm: HTMLElement, scale: number): void
+  private setScale(elm: HTMLElement, scale: number): void
   {
     elm.style.transform = `scale(${scale}, ${scale})`;
   }

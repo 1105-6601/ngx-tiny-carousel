@@ -1,3 +1,16 @@
 <div class="dots" [ngClass]="['dot-position-' + dotPosition, 'dot-style-' + dotStyle]" *ngIf="dotCount > 1" #dots>
-  <div class="dot" [ngClass]="{'active': i === currentIndex}" *ngFor="let _ of [].constructor(dotCount); let i = index" (click)="dotSelect.emit(i)"></div>
+  <ng-container *ngFor="let _ of [].constructor(dotCount); let i = index">
+    <div class="dot"
+         *ngIf="dotStyle === 'dot'"
+         [ngClass]="{'active': i === currentIndex}"
+         [style.width.px]="dotSize"
+         [style.height.px]="dotSize"
+         [style.margin.px]="dotMargin"
+         (click)="dotSelect.emit(i)"></div>
+    <div class="dot"
+         *ngIf="dotStyle === 'bar'"
+         [ngClass]="{'active': i === currentIndex}"
+         [style.width.px]="dotSize"
+         (click)="dotSelect.emit(i)"></div>
+  </ng-container>
 </div>

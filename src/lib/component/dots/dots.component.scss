@@ -15,11 +15,8 @@
 
   .dot {
     display: inline-block;
-    border-radius: 20px;
-    width: 10px;
-    height: 10px;
+    border-radius: 50%;
     background: white;
-    margin: 5px;
     cursor: pointer;
     opacity: .4;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, .5);
@@ -32,7 +29,6 @@
   &.dot-style-bar {
     .dot {
       border-radius: 0;
-      width: 20px;
       height: 5px;
       margin: 0;
     }

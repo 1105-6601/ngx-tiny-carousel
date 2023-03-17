@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArrowRightComponent }       from './arrow-right.component';
+import { ElementRef }                from '@angular/core';
 
 describe('ArrowRightComponent', () => {
   let component: ArrowRightComponent;
@@ -26,8 +27,9 @@ describe('ArrowRightComponent', () => {
   describe('スケール変更時', () => {
 
     beforeEach(() => {
-      const svg = fixture.nativeElement.querySelector('svg');
-      component.setScale(svg, 0.5);
+      const mockElmRef = new class extends ElementRef<HTMLElement>{}(fixture.nativeElement.querySelector('svg'));
+      component.uiScale = 0.5;
+      component.svg = mockElmRef;
     });
 
     it('SVGのtransformプロパティが変更される', () => {
