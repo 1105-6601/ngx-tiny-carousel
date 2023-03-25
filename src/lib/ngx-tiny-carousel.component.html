@@ -12,5 +12,5 @@
       <arrow-right *ngIf="!!uiScale && dotCount > 1" #arrowRight [uiScale]="uiScale" [arrowStyle]="arrowStyle"></arrow-right>
     </div>
   </div>
-  <dots *ngIf="displayDots && !!uiScale" [dotPosition]="dotPosition" [dotStyle]="dotStyle" [dotCount]="dotCount" [currentIndex]="currentCellIndex" [uiScale]="uiScale" (dotSelect)="jump($event)" #dots></dots>
+  <dots *ngIf="displayDots" [dotPosition]="dotPosition" [dotStyle]="dotStyle" [dotCount]="dotCount" [currentIndex]="currentCellIndex" (dotSelect)="jump($event)" #dots></dots>
 </div>

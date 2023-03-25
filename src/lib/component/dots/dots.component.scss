@@ -33,11 +33,23 @@
       margin: 0;
     }
 
-    &.dot-position-outer {
-      bottom: 11.5%;
-    }
     &.dot-position-inner {
-      bottom: 15%;
+      bottom: 13%;
+    }
+  }
+
+  // Coloring
+  &.dot-position-outer {
+    .dot {
+      background: white;
+      cursor: pointer;
+      opacity: .8;
+      box-shadow: 1px 1px 10px rgba(0, 0, 0, .5);
+
+      &.active {
+        opacity: 1;
+        background: #888;
+      }
     }
   }
 }

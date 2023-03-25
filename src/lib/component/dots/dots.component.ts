@@ -24,9 +24,6 @@ export class DotsComponent
   public dotCount: number = 0;
 
   @Input()
-  public uiScale: number = 1;
-
-  @Input()
   public dotPosition: DotPosition = 'inner';
 
   @Input()
@@ -44,36 +41,30 @@ export class DotsComponent
   {
     if (ref) {
       setTimeout(() => {
-        this.setScale(ref.nativeElement, this.uiScale * 1.3);
         this.calculateDotSize(ref.nativeElement);
       });
     }
   }
 
-  private setScale(elm: HTMLElement, scale: number): void
-  {
-    elm.style.transform = `scale(${scale}, ${scale})`;
-  }
-
   private calculateDotSize(containerElm: HTMLElement): void
   {
     if (this.dotStyle === 'dot') {
-      this.dotSize = DotsComponent.BASE_SIZE_FOR_DOT_STYLE;
+      this.dotSize   = DotsComponent.BASE_SIZE_FOR_DOT_STYLE;
+      this.dotMargin = DotsComponent.BASE_MARGIN_FOR_DOT_STYLE;
     } else {
       this.dotSize = DotsComponent.BASE_SIZE_FOR_BAR_STYLE;
     }
 
-    this.dotMargin = DotsComponent.BASE_MARGIN_FOR_DOT_STYLE;
+    const totalDotWidth  = (this.dotSize + (this.dotMargin * 2)) * this.dotCount;
+    const dotsWidthLimit = containerElm.clientWidth * 0.95;
 
-    const dotsWidthLimit = containerElm.clientWidth * 0.75;
-
-    if (this.dotSize * this.dotCount > dotsWidthLimit) {
+    if (totalDotWidth > dotsWidthLimit) {
       if (this.dotStyle === 'dot') {
-        const size     = Math.floor(dotsWidthLimit / this.dotCount);
+        const size     = dotsWidthLimit / this.dotCount;
         this.dotSize   = size < 2 ? 1 : size - 1;
         this.dotMargin = 0.5;
       } else {
-        this.dotSize = Math.floor(dotsWidthLimit / this.dotCount);
+        this.dotSize = dotsWidthLimit / this.dotCount;
       }
     }
   }
