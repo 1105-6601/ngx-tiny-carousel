@@ -18,6 +18,9 @@ export class DotsComponent
   private static readonly BASE_MARGIN_FOR_DOT_STYLE: number = 5;
 
   @Input()
+  public containerElm?: HTMLDivElement;
+
+  @Input()
   public currentIndex: number = 0;
 
   @Input()
@@ -40,13 +43,12 @@ export class DotsComponent
   public set dots(ref: ElementRef)
   {
     if (ref) {
-      setTimeout(() => {
-        this.calculateDotSize(ref.nativeElement);
-      });
+      setTimeout(() => this.calculateDotSize(ref.nativeElement));
+      setTimeout(() => this.tweakDotPosition(ref.nativeElement));
     }
   }
 
-  private calculateDotSize(containerElm: HTMLElement): void
+  private calculateDotSize(dotsElm: HTMLElement): void
   {
     if (this.dotStyle === 'dot') {
       this.dotSize   = DotsComponent.BASE_SIZE_FOR_DOT_STYLE;
@@ -56,7 +58,7 @@ export class DotsComponent
     }
 
     const totalDotWidth  = (this.dotSize + (this.dotMargin * 2)) * this.dotCount;
-    const dotsWidthLimit = containerElm.clientWidth * 0.95;
+    const dotsWidthLimit = dotsElm.clientWidth * 0.95;
 
     if (totalDotWidth > dotsWidthLimit) {
       if (this.dotStyle === 'dot') {
@@ -71,6 +73,29 @@ export class DotsComponent
         }
       } else {
         this.dotSize = dotsWidthLimit / this.dotCount;
+      }
+    }
+  }
+
+  private tweakDotPosition(dotsElm: HTMLElement): void
+  {
+    const firstDot = dotsElm.querySelector('.dot') as HTMLElement;
+    if (!firstDot || !this.containerElm) {
+      return;
+    }
+
+    const dotRect       = firstDot.getBoundingClientRect();
+    const containerRect = this.containerElm.getBoundingClientRect();
+    const diff          = Math.abs(containerRect.bottom - dotRect.bottom);
+    const threshold     = DotsComponent.BASE_SIZE_FOR_DOT_STYLE;
+
+    if (diff < threshold) {
+      if (this.dotPosition === 'inner') {
+        dotsElm.style.bottom = `${diff + (threshold - diff) * 2}%`;
+      } else {
+        console.log(threshold, diff, threshold - diff);
+        this.containerElm.style.height = `${this.containerElm.clientHeight * 1.15}px`;
+        dotsElm.style.bottom = `${15}%`;
       }
     }
   }
