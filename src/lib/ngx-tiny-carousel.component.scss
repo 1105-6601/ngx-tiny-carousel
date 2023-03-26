@@ -39,7 +39,7 @@
     .arrow {
       position: relative;
       cursor: pointer;
-      width: 15%;
+      width: calc(15% + 15px);
     }
 
     .arrow-left {
