@@ -60,9 +60,15 @@ export class DotsComponent
 
     if (totalDotWidth > dotsWidthLimit) {
       if (this.dotStyle === 'dot') {
-        const size     = dotsWidthLimit / this.dotCount;
-        this.dotSize   = size < 2 ? 1 : size - 1;
-        this.dotMargin = 0.5;
+        let size = dotsWidthLimit / this.dotCount;
+        if (size >= DotsComponent.BASE_SIZE_FOR_DOT_STYLE) {
+          const remainingWidth = dotsWidthLimit - (DotsComponent.BASE_SIZE_FOR_DOT_STYLE * this.dotCount);
+          this.dotSize         = DotsComponent.BASE_SIZE_FOR_DOT_STYLE;
+          this.dotMargin       = remainingWidth / this.dotCount / 2;
+        } else {
+          this.dotSize   = size < 2 ? 1 : size - 1;
+          this.dotMargin = 0.5;
+        }
       } else {
         this.dotSize = dotsWidthLimit / this.dotCount;
       }

@@ -5,7 +5,8 @@
          [ngClass]="{'active': i === currentIndex}"
          [style.width.px]="dotSize"
          [style.height.px]="dotSize"
-         [style.margin.px]="dotMargin"
+         [style.margin-left.px]="dotMargin"
+         [style.margin-right.px]="dotMargin"
          (click)="dotSelect.emit(i)"></div>
     <div class="dot"
          *ngIf="dotStyle === 'bar'"
