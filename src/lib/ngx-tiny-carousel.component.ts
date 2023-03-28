@@ -319,6 +319,10 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     this.translateXDistance = this.cellWidth;
     this.totalCells         = this.cells.length;
 
+    if (this.totalCells < this.displayCells + 2) {
+      throw new Error('[displayCells] must be less than or equal to the total number of cells - 2. Please check the number of cells.');
+    }
+
     Array.from(this.cells).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
       cell.ElementRef.nativeElement.style.width = `${this.cellWidth}px`;
       cell.ElementRef.nativeElement.style.left  = `${index * this.cellWidth}px`;
@@ -394,7 +398,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   private handleCellsVirtually(event: Event): void
   {
     const elm    = event.target as HTMLElement;
-    const margin = 2;
+    const margin = 1;
 
     this.carouselLoopCount = Math.floor(elm.scrollLeft / (this.cellWidth * this.totalCells));
 
