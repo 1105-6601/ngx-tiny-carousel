@@ -319,7 +319,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     this.translateXDistance = this.cellWidth;
     this.totalCells         = this.cells.length;
 
-    if (this.totalCells < this.displayCells + 2) {
+    // Check if the number of cells is valid if the infinite scroll is enabled.
+    if (this.enableInfiniteScroll && this.totalCells < this.displayCells + 2) {
       throw new Error('[displayCells] must be less than or equal to the total number of cells - 2. Please check the number of cells.');
     }
 
