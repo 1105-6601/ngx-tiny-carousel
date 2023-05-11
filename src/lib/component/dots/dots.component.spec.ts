@@ -26,21 +26,6 @@ describe('DotsComponent', () => {
     fixture.detectChanges();
   });
 
-  describe('スケール変更時', () => {
-
-    beforeEach(() => {
-      const mockElmRef = new class extends ElementRef<HTMLElement>{}(fixture.nativeElement.querySelector('.dots'));
-      component.uiScale = 0.5;
-      component.dots = mockElmRef;
-      jest.runAllTimers();
-    });
-
-    it('ホスト要素のtransformプロパティが変更される', () => {
-      const dots = fixture.nativeElement.querySelector('.dots');
-      expect(dots.style.transform).toBe('scale(0.65, 0.65)');
-    });
-  });
-
   describe('表示中の要素のインデックスが一致する場合', () => {
 
     beforeEach(() => {

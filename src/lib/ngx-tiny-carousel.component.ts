@@ -54,6 +54,12 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
   @Input()
   public cellWidth: number = 0;
 
+  @Input()
+  public virtualCellMargin: number = 1;
+
+  @Input()
+  public viewPortMargin: number = 2;
+
   @ViewChild('container')
   public container?: ElementRef;
 
@@ -190,9 +196,16 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     }
 
     if (this.cells) {
+
+      const prevIndexFromTarget = targetCellIndex <= 0 ? this.maxCellIndex : targetCellIndex - 1;
+      const nextIndexFromTarget = targetCellIndex >= this.maxCellIndex ? 0 : targetCellIndex + 1;
+
+      activatedCellIndex.push(prevIndexFromTarget, nextIndexFromTarget);
+
       Array.from(this.cells).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
         if (activatedCellIndex.includes(index)) {
           cell.ElementRef.nativeElement.classList.add(this.activeCellClass);
+          cell.isInViewport = true;
         }
       });
 
@@ -320,8 +333,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
     this.totalCells         = this.cells.length;
 
     // Check if the number of cells is valid if the infinite scroll is enabled.
-    if (this.enableInfiniteScroll && this.totalCells < this.displayCells + 2) {
-      throw new Error('[displayCells] must be less than or equal to the total number of cells - 2. Please check the number of cells.');
+    if (this.enableInfiniteScroll && this.totalCells < this.displayCells + (this.virtualCellMargin * 2)) {
+      throw new Error('[displayCells] must be less than or equal to the total number of cells - ([virtualCellMargin] * 2). Please check the number of cells.');
     }
 
     Array.from(this.cells).forEach((cell: NgxTinyCarouselCellComponent, index: number) => {
@@ -337,6 +350,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
       this.activateAllCells();
       this.bindHorizontalScrollEvent();
       this.bindDragEvent();
+      this.checkCellIsInViewPort();
 
       const cellContainerInnerElm = this.cellContainerInner.nativeElement as HTMLElement;
       const fullWidth             = this.cellWidth * this.totalCells;
@@ -398,8 +412,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
   private handleCellsVirtually(event: Event): void
   {
-    const elm    = event.target as HTMLElement;
-    const margin = 1;
+    const elm = event.target as HTMLElement;
 
     this.carouselLoopCount = Math.floor(elm.scrollLeft / (this.cellWidth * this.totalCells));
 
@@ -411,7 +424,7 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
 
     if (this.enableInfiniteScroll) {
       if (this.cells) {
-        const indexToBeActivate        = this.range(this.displayCells + margin * 2, Math.floor(actualScrollLeft / this.cellWidth) - margin);
+        const indexToBeActivate        = this.range(this.displayCells + this.virtualCellMargin * 2, Math.floor(actualScrollLeft / this.cellWidth) - this.virtualCellMargin);
         const nativeCellContainerInner = this.cellContainerInner?.nativeElement;
         const nativeCellChildren       = [...nativeCellContainerInner.children];
 
@@ -458,6 +471,8 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
         }
       }
     }
+
+    this.checkCellIsInViewPort();
   }
 
   private range(size: number, startAt: number = 0): number[]
@@ -506,5 +521,23 @@ export class NgxTinyCarouselComponent implements AfterViewInit, AfterContentInit
         event.stopPropagation();
       }
     }, true);
+  }
+
+  private checkCellIsInViewPort(): void
+  {
+    if (this.cells) {
+      const containerRect = this.cellContainer?.nativeElement.getBoundingClientRect();
+      const extendedLeft  = containerRect.left - (this.cellWidth * this.viewPortMargin);
+      const extendedRight = containerRect.right + (this.cellWidth * this.viewPortMargin);
+
+      for (let cell of this.cells) {
+        const cellRect   = cell.ElementRef.nativeElement.getBoundingClientRect();
+        const cellCenter = cellRect.left + cellRect.width / 2;
+
+        if (cellCenter !== 0) {
+          cell.isInViewport = cellCenter >= extendedLeft && cellCenter <= extendedRight;
+        }
+      }
+    }
   }
 }

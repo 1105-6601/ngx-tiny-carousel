@@ -83,7 +83,6 @@ export class CarouselComponent
 ## html
 
 ```html
-
 <div style="width: 400px;">
   <ngx-tiny-carousel [displayCells]="1">
     <ngx-tiny-carousel-cell *ngFor="let src of imageSources">
@@ -112,23 +111,36 @@ export class CarouselComponent
 }
 ```
 
+# Lazy load content
+
+```html
+<ngx-tiny-carousel [displayCells]="1">
+  <ngx-tiny-carousel-cell *ngFor="let src of imageSources">
+    <div class="centralise" *lazyContent>
+      <img [src]="src" alt="">
+    </div>
+  </ngx-tiny-carousel-cell>
+</ngx-tiny-carousel>
+```
+
 # API
 
 ## @Input
 
-| @Input                 | Type    | Required | Default   | Description                                                                                                                                                              |
-|------------------------|---------|----------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [displayCells]         | number  | optional | 1         | Cell count to be displayed at once.                                                                                                                                      |
-| [cellHeightScale]      | number  | optional | 1         | Specifies the ratio of the cell height to the cell width.                                                                                                                |
-| [dotPosition]          | string  | optional | 'inner'   | 'inner' or 'outer'.                                                                                                                                                      |
-| [dotStyle]             | string  | optional | 'dot'     | 'dot' or 'bar'.                                                                                                                                                          |
-| [arrowStyle]           | string  | optional | 'default' | 'default' or 'circle'.                                                                                                                                                   |
-| [uiScale]              | number  | optional | none      | UI scale of dots and arrows. This will be calculated in response to container element height automatically.                                                              |
-| [displayArrows]        | boolean | optional | true      | Decide to display arrows or not.                                                                                                                                         |
-| [displayDots]          | boolean | optional | true      | Decide to display dots or not.                                                                                                                                           |
-| [enableDrag]           | boolean | optional | false     | If set true, The carousel becomes draggable.                                                                                                                             |
-| [enableInfiniteScroll] | boolean | optional | false     | Must be used with the `enableDrag` option. If set true, The carousel becomes infinite scroll.                                                                            |
-| [cellWidth]            | number  | optional | 0 (auto)  | Basically calculated automatically. However, this option may be useful if you nest `ngx-tiny-carousel` inside a carousel cell that has drag and infinite scroll enabled. |
+| @Input                 | Type    | Required | Default   | Description                                                                                                                                                                                                 |
+|------------------------|---------|----------|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [displayCells]         | number  | optional | 1         | Cell count to be displayed at once.                                                                                                                                                                         |
+| [cellHeightScale]      | number  | optional | 1         | Specifies the ratio of the cell height to the cell width.                                                                                                                                                   |
+| [dotPosition]          | string  | optional | 'inner'   | 'inner' or 'outer'.                                                                                                                                                                                         |
+| [dotStyle]             | string  | optional | 'dot'     | 'dot' or 'bar'.                                                                                                                                                                                             |
+| [arrowStyle]           | string  | optional | 'default' | 'default' or 'circle'.                                                                                                                                                                                      |
+| [uiScale]              | number  | optional | none      | UI scale of dots and arrows. This will be calculated in response to container element height automatically.                                                                                                 |
+| [displayArrows]        | boolean | optional | true      | Decide to display arrows or not.                                                                                                                                                                            |
+| [displayDots]          | boolean | optional | true      | Decide to display dots or not.                                                                                                                                                                              |
+| [enableDrag]           | boolean | optional | false     | If set true, The carousel becomes draggable.                                                                                                                                                                |
+| [enableInfiniteScroll] | boolean | optional | false     | Must be used with the `enableDrag` option. If set true, The carousel becomes infinite scroll.                                                                                                               |
+| [cellWidth]            | number  | optional | 0 (auto)  | Basically calculated automatically. However, this option may be useful if you nest `ngx-tiny-carousel` inside a carousel cell that has drag and infinite scroll enabled.                                    |
+| [virtualCellMargin]    | number  | optional | 1         | If `enableInfiniteScroll` is enabled, cell elements are virtualized. In this case, the cells before and after the visible cell can be pre-rendered by the number of cells specified in `virtualCellMargin`. |
 
 ## Functions
 

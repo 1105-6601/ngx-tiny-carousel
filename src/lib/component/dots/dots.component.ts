@@ -93,7 +93,6 @@ export class DotsComponent
       if (this.dotPosition === 'inner') {
         dotsElm.style.bottom = `${diff + (threshold - diff) * 2}%`;
       } else {
-        console.log(threshold, diff, threshold - diff);
         this.containerElm.style.height = `${this.containerElm.clientHeight * 1.15}px`;
         dotsElm.style.bottom = `${15}%`;
       }

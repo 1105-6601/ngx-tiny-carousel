@@ -5,6 +5,7 @@ import { ArrowLeftComponent }           from './component/arrow-left/arrow-left.
 import { ArrowRightComponent }          from './component/arrow-right/arrow-right.component';
 import { DotsComponent }                from './component/dots/dots.component';
 import { NgxTinyCarouselCellComponent } from './component/ngx-tiny-carousel-cell/ngx-tiny-carousel-cell.component';
+import { LazyContentDirective }         from './directive/lazy-content.directive';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { NgxTinyCarouselCellComponent } from './component/ngx-tiny-carousel-cell
     ArrowLeftComponent,
     ArrowRightComponent,
     DotsComponent,
+    LazyContentDirective,
   ],
   imports:      [
     CommonModule,
@@ -20,6 +22,7 @@ import { NgxTinyCarouselCellComponent } from './component/ngx-tiny-carousel-cell
   exports:      [
     NgxTinyCarouselComponent,
     NgxTinyCarouselCellComponent,
+    LazyContentDirective,
   ],
 })
 export class NgxTinyCarouselModule

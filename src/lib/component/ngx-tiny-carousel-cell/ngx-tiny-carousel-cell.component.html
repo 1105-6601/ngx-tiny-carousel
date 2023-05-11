@@ -1,1 +1,6 @@
-<ng-content></ng-content>
+<ng-container *ngIf="!isLazy">
+  <ng-content></ng-content>
+</ng-container>
+<ng-container *ngIf="isLazy">
+  <ng-container *ngTemplateOutlet="lazyContent"></ng-container>
+</ng-container>
